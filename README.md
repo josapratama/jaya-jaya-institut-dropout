@@ -64,6 +64,7 @@ Dashboard dibuat untuk memvisualisasikan dan memonitor performa mahasiswa Jaya J
 > Dashboard dapat diakses secara lokal menggunakan Metabase dengan Docker.
 
 **Credential:**
+
 - **Email:** `root@mail.com`
 - **Password:** `root123`
 
@@ -99,9 +100,11 @@ Aplikasi akan terbuka di browser: `http://localhost:8501`
 
 ### Link Streamlit Community Cloud
 
-> **[https://jayajayainstitut-dropout.streamlit.app](https://share.streamlit.io)**
->
-> *(Deploy ke Streamlit Community Cloud: push repo ke GitHub, lalu connect di share.streamlit.io)*
+> **[https://josapratama-jaya-jaya-institut-dropout.streamlit.app](https://josapratama-jaya-jaya-institut-dropout.streamlit.app)**
+
+### Link GitHub Repository
+
+> **[https://github.com/josapratama/jaya-jaya-institut-dropout](https://github.com/josapratama/jaya-jaya-institut-dropout)**
 
 ### Fitur Prototype
 
@@ -118,22 +121,22 @@ Berdasarkan analisis yang telah dilakukan terhadap data mahasiswa Jaya Jaya Inst
 
 ### Temuan Utama
 
-| Temuan | Detail |
-|--------|--------|
-| Tingkat Dropout | **32.1%** dari total 4,424 mahasiswa |
-| Faktor terkuat | Nilai dan jumlah unit disetujui semester 1 & 2 |
+| Temuan           | Detail                                                               |
+| ---------------- | -------------------------------------------------------------------- |
+| Tingkat Dropout  | **32.1%** dari total 4,424 mahasiswa                                 |
+| Faktor terkuat   | Nilai dan jumlah unit disetujui semester 1 & 2                       |
 | Faktor finansial | Mahasiswa dengan SPP menunggak memiliki dropout rate 3x lebih tinggi |
-| Faktor beasiswa | Penerima beasiswa memiliki dropout rate lebih rendah signifikan |
-| Program studi | Beberapa prodi memiliki dropout rate > 40%, jauh di atas rata-rata |
+| Faktor beasiswa  | Penerima beasiswa memiliki dropout rate lebih rendah signifikan      |
+| Program studi    | Beberapa prodi memiliki dropout rate > 40%, jauh di atas rata-rata   |
 
 ### Performa Model
 
-| Metrik | Nilai |
-|--------|-------|
+| Metrik    | Nilai                    |
+| --------- | ------------------------ |
 | Algoritma | Random Forest Classifier |
-| Akurasi | ~86% |
-| F1 Score | ~0.83 |
-| ROC-AUC | ~0.92 |
+| Akurasi   | ~86%                     |
+| F1 Score  | ~0.83                    |
+| ROC-AUC   | ~0.92                    |
 
 Model berhasil mengidentifikasi mahasiswa berisiko dropout dengan precision dan recall yang seimbang, membuatnya praktis untuk digunakan sebagai sistem peringatan dini.
 
@@ -144,28 +147,37 @@ Model berhasil mengidentifikasi mahasiswa berisiko dropout dengan precision dan 
 Berdasarkan hasil analisis, berikut action items yang direkomendasikan untuk Jaya Jaya Institut:
 
 ### 1. 🚨 Implementasi Early Warning System
+
 Gunakan model machine learning ini sebagai sistem peringatan dini. Setiap awal semester, jalankan prediksi untuk seluruh mahasiswa aktif dan identifikasi yang masuk kategori risiko tinggi (probabilitas dropout > 60%) untuk mendapatkan intervensi segera.
 
 ### 2. 📚 Program Bimbingan Akademik Intensif
+
 Mahasiswa dengan nilai semester 1 di bawah 10/20 atau yang gagal lebih dari 50% mata kuliah harus segera mendapatkan program bimbingan intensif dari dosen wali. Intervensi dini di semester pertama terbukti sangat krusial.
 
 ### 3. 💰 Bantuan Finansial Proaktif
+
 Identifikasi mahasiswa dengan tunggakan SPP sebelum semester baru dimulai. Tawarkan:
+
 - Skema cicilan pembayaran yang fleksibel
 - Rekomendasi program beasiswa internal/eksternal
 - Konsultasi keuangan dengan bagian kemahasiswaan
 
 ### 4. 🎓 Evaluasi Program Studi Bermasalah
+
 Program studi dengan dropout rate > 35% memerlukan evaluasi menyeluruh meliputi:
+
 - Review beban dan relevansi kurikulum
 - Peningkatan kualitas dan metode pengajaran
 - Program pendampingan khusus per prodi
 
 ### 5. 📈 Monitoring Dashboard Rutin
+
 Jadikan dashboard sebagai alat monitoring wajib dalam rapat evaluasi bulanan. Pantau tren dropout per semester, per program studi, dan per kelompok demografis untuk pengambilan kebijakan berbasis data.
 
 ### 6. 🤝 Program Orientasi Khusus Mahasiswa Rentan
+
 Mahasiswa berisiko tinggi perlu program orientasi dan konseling khusus:
+
 - Mahasiswa berusia > 25 tahun saat enrollment
 - Mahasiswa pindahan (displaced) dari luar daerah
 - Mahasiswa tanpa beasiswa dengan kondisi finansial terbatas
@@ -197,4 +209,4 @@ submission/
 
 ---
 
-*Proyek ini dikerjakan sebagai submission akhir kelas Belajar Penerapan Data Science — Dicoding Academy.*
+_Proyek ini dikerjakan sebagai submission akhir kelas Belajar Penerapan Data Science — Dicoding Academy._
