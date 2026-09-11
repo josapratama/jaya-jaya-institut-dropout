@@ -100,9 +100,7 @@ Aplikasi akan terbuka di browser: `http://localhost:8501`
 
 ### Link Streamlit Community Cloud
 
-> **[https://josapratama-jaya-jaya-institut-dropout-app.streamlit.app](https://josapratama-jaya-jaya-institut-dropout-app.streamlit.app)**
->
-> _Deploy via [share.streamlit.io](https://share.streamlit.io): pilih repo `josapratama/jaya-jaya-institut-dropout`, branch `main`, main file `app.py`_
+> **[https://jaya-jaya-institut-dropout-oeqbgsu2rukf4kjwvtc3ff.streamlit.app](https://jaya-jaya-institut-dropout-oeqbgsu2rukf4kjwvtc3ff.streamlit.app)**
 
 ### Link GitHub Repository
 
