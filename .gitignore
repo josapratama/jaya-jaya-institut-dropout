@@ -1,0 +1,7 @@
+plugins/
+metabase-data/
+metabase.jar
+students.db
+__pycache__/
+*.pyc
+.env

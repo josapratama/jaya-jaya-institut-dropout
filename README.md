@@ -19,8 +19,8 @@ Jaya Jaya Institut adalah institusi pendidikan perguruan tinggi yang berdiri sej
 ### Cakupan Proyek
 
 - Analisis eksploratif data (EDA) untuk memahami distribusi dan pola dropout
-- Pembangunan model machine learning untuk memprediksi risiko dropout mahasiswa
-- Pembuatan dashboard monitoring performa mahasiswa
+- Pembangunan model machine learning untuk memprediksi risiko dropout (Dropout vs Graduate)
+- Pembuatan dashboard monitoring performa mahasiswa menggunakan Metabase
 - Deployment prototype sistem prediksi berbasis Streamlit
 
 ---
@@ -29,7 +29,7 @@ Jaya Jaya Institut adalah institusi pendidikan perguruan tinggi yang berdiri sej
 
 ### Sumber Data
 
-Dataset Students' Performance dari Dicoding Academy (UCI ML Repository):  
+Dataset Students' Performance dari Dicoding Academy:  
 [https://github.com/dicodingacademy/dicoding_dataset/blob/main/students_performance/README.md](https://github.com/dicodingacademy/dicoding_dataset/blob/main/students_performance/README.md)
 
 - **Jumlah data:** 4,424 mahasiswa
@@ -39,47 +39,68 @@ Dataset Students' Performance dari Dicoding Academy (UCI ML Repository):
 
 ### Setup Environment
 
-```bash
-# Clone / download project
-# Pastikan Python 3.9+ sudah terinstall
+#### Setup Environment - Anaconda
 
-# Install dependencies
+```bash
+conda create --name main-ds python=3.9
+conda activate main-ds
 pip install -r requirements.txt
+```
+
+#### Setup Environment - Shell/Terminal (pipenv)
+
+```bash
+pip install pipenv
+pipenv install
+pipenv shell
+```
+
+#### Menjalankan Notebook
+
+```bash
+jupyter notebook notebook.ipynb
 ```
 
 ---
 
 ## Business Dashboard
 
-Dashboard dibuat untuk memvisualisasikan dan memonitor performa mahasiswa Jaya Jaya Institut. Dashboard mencakup:
+Dashboard dibuat menggunakan **Metabase** untuk memvisualisasikan dan memonitor performa mahasiswa Jaya Jaya Institut.
+
+### Visualisasi pada Dashboard
 
 1. **Distribusi Status Mahasiswa** — proporsi Dropout, Graduate, dan Enrolled
-2. **Dropout Rate per Program Studi** — identifikasi prodi dengan masalah terbesar
+2. **Dropout Rate per Program Studi** — identifikasi prodi dengan tingkat dropout tertinggi
 3. **Pengaruh Status SPP** — korelasi pembayaran SPP dengan risiko dropout
-4. **Analisis Demografis** — distribusi usia, gender, beasiswa terhadap status
-5. **Analisis Performa Akademik** — nilai dan unit semester vs status mahasiswa
+4. **Analisis Demografis** — distribusi usia, gender, dan beasiswa terhadap status
+5. **Performa Akademik** — nilai dan unit semester vs status mahasiswa
 
-### Akses Dashboard Metabase
-
-> Dashboard dapat diakses secara lokal menggunakan Metabase dengan Docker.
-
-**Credential:**
-
-- **Email:** `root@mail.com`
-- **Password:** `root123`
-
-**Menjalankan Metabase dengan Docker:**
+### Menjalankan Dashboard Metabase
 
 ```bash
-# Pull dan jalankan container Metabase
-docker run -d -p 3000:3000 --name metabase metabase/metabase
+# Jalankan container Metabase
+docker run -d -p 3000:3000 \
+  -v "$(pwd)/metabase-data:/metabase.db" \
+  --name metabase metabase/metabase
 
-# Import database (setelah container berjalan)
+# Tunggu ~2 menit, lalu akses di browser:
+# http://localhost:3000
+```
+
+Untuk me-restore dashboard yang sudah dibuat, copy file database ke container:
+
+```bash
 docker cp metabase.db.mv.db metabase:/metabase.db/metabase.db.mv.db
 docker restart metabase
-
-# Akses di browser: http://localhost:3000
 ```
+
+### Credential Metabase
+
+| Field        | Value                   |
+| ------------ | ----------------------- |
+| **Email**    | `root@mail.com`         |
+| **Password** | `root123`               |
+| **URL**      | `http://localhost:3000` |
 
 Screenshot dashboard tersedia di folder `pratama_dicoding-dashboard/`.
 
@@ -93,6 +114,14 @@ Prototype sistem prediksi dropout dibuat menggunakan Streamlit.
 
 ```bash
 # Dari folder submission/
+# Pastikan environment sudah aktif
+
+# Jika menggunakan conda:
+conda activate main-ds
+streamlit run app.py
+
+# Jika menggunakan pipenv:
+pipenv shell
 streamlit run app.py
 ```
 
@@ -109,7 +138,7 @@ Aplikasi akan terbuka di browser: `http://localhost:8501`
 ### Fitur Prototype
 
 - **🏠 Dashboard Overview** — KPI utama dan visualisasi ringkasan data
-- **🔍 Prediksi Dropout** — Form input data mahasiswa + hasil prediksi dengan risk gauge
+- **🔍 Prediksi Dropout** — Form input data mahasiswa + hasil prediksi probabilitas
 - **📊 Analisis Data** — EDA interaktif, statistik per status, feature importance
 - **ℹ️ Tentang Sistem** — Dokumentasi model dan action items
 
@@ -117,70 +146,66 @@ Aplikasi akan terbuka di browser: `http://localhost:8501`
 
 ## Conclusion
 
-Berdasarkan analisis yang telah dilakukan terhadap data mahasiswa Jaya Jaya Institut:
+Berdasarkan analisis data mahasiswa Jaya Jaya Institut:
+
+### Catatan Penting tentang Data
+
+Model machine learning **hanya dilatih menggunakan data mahasiswa berstatus Dropout dan Graduate**. Mahasiswa berstatus Enrolled **tidak diikutsertakan** dalam proses training karena outcome mereka belum diketahui — mereka masih aktif kuliah. Data Enrolled disimpan terpisah di `model/enrolled_for_prediction.csv` untuk digunakan sebagai data prediksi di masa depan.
+
+| Kelompok Data | Jumlah | Keterangan                                               |
+| ------------- | ------ | -------------------------------------------------------- |
+| Graduate      | 2,209  | Digunakan untuk training (target = 0)                    |
+| Dropout       | 1,421  | Digunakan untuk training (target = 1)                    |
+| Enrolled      | 794    | **Tidak digunakan** — disimpan untuk prediksi masa depan |
 
 ### Temuan Utama
 
-| Temuan           | Detail                                                               |
-| ---------------- | -------------------------------------------------------------------- |
-| Tingkat Dropout  | **32.1%** dari total 4,424 mahasiswa                                 |
-| Faktor terkuat   | Nilai dan jumlah unit disetujui semester 1 & 2                       |
-| Faktor finansial | Mahasiswa dengan SPP menunggak memiliki dropout rate 3x lebih tinggi |
-| Faktor beasiswa  | Penerima beasiswa memiliki dropout rate lebih rendah signifikan      |
-| Program studi    | Beberapa prodi memiliki dropout rate > 40%, jauh di atas rata-rata   |
+| Temuan                  | Detail                                                      |
+| ----------------------- | ----------------------------------------------------------- |
+| Dropout rate (DO vs GR) | **39.2%** dari subset Dropout+Graduate                      |
+| Faktor terkuat          | Nilai & unit disetujui semester 1 dan 2                     |
+| Faktor finansial        | Mahasiswa dengan SPP menunggak dropout rate 3x lebih tinggi |
+| Faktor beasiswa         | Penerima beasiswa memiliki dropout rate jauh lebih rendah   |
+| Program studi           | Beberapa prodi memiliki dropout rate > 40%                  |
 
-### Performa Model
+### Performa Model (Random Forest — Dropout vs Graduate)
 
-| Metrik    | Nilai                    |
-| --------- | ------------------------ |
-| Algoritma | Random Forest Classifier |
-| Akurasi   | ~86%                     |
-| F1 Score  | ~0.83                    |
-| ROC-AUC   | ~0.92                    |
-
-Model berhasil mengidentifikasi mahasiswa berisiko dropout dengan precision dan recall yang seimbang, membuatnya praktis untuk digunakan sebagai sistem peringatan dini.
+| Metrik        | Nilai                             |
+| ------------- | --------------------------------- |
+| Algoritma     | Random Forest Classifier          |
+| Data training | Dropout + Graduate (3,630 sampel) |
+| Target        | 1 = Dropout, 0 = Graduate         |
+| Akurasi       | **92.56%**                        |
+| F1 Score      | **0.9043**                        |
+| ROC-AUC       | **0.9716**                        |
 
 ---
 
 ## Rekomendasi Action Items
 
-Berdasarkan hasil analisis, berikut action items yang direkomendasikan untuk Jaya Jaya Institut:
-
 ### 1. 🚨 Implementasi Early Warning System
 
-Gunakan model machine learning ini sebagai sistem peringatan dini. Setiap awal semester, jalankan prediksi untuk seluruh mahasiswa aktif dan identifikasi yang masuk kategori risiko tinggi (probabilitas dropout > 60%) untuk mendapatkan intervensi segera.
+Gunakan model ini setiap awal semester untuk memprediksi seluruh mahasiswa aktif (Enrolled). Mahasiswa dengan probabilitas dropout > 60% segera mendapatkan intervensi.
 
 ### 2. 📚 Program Bimbingan Akademik Intensif
 
-Mahasiswa dengan nilai semester 1 di bawah 10/20 atau yang gagal lebih dari 50% mata kuliah harus segera mendapatkan program bimbingan intensif dari dosen wali. Intervensi dini di semester pertama terbukti sangat krusial.
+Mahasiswa dengan nilai semester 1 di bawah 10/20 atau gagal lebih dari 50% mata kuliah harus segera mendapat bimbingan intensif dari dosen wali. Intervensi dini di semester pertama sangat krusial.
 
 ### 3. 💰 Bantuan Finansial Proaktif
 
-Identifikasi mahasiswa dengan tunggakan SPP sebelum semester baru dimulai. Tawarkan:
-
-- Skema cicilan pembayaran yang fleksibel
-- Rekomendasi program beasiswa internal/eksternal
-- Konsultasi keuangan dengan bagian kemahasiswaan
+Identifikasi mahasiswa dengan tunggakan SPP sebelum semester baru. Tawarkan skema cicilan fleksibel atau rekomendasikan program beasiswa. Data menunjukkan mahasiswa dengan SPP tidak lunas memiliki risiko dropout 3x lebih tinggi.
 
 ### 4. 🎓 Evaluasi Program Studi Bermasalah
 
-Program studi dengan dropout rate > 35% memerlukan evaluasi menyeluruh meliputi:
-
-- Review beban dan relevansi kurikulum
-- Peningkatan kualitas dan metode pengajaran
-- Program pendampingan khusus per prodi
+Program studi dengan dropout rate > 35% memerlukan evaluasi menyeluruh: review beban kurikulum, metode pengajaran, dan program pendampingan khusus.
 
 ### 5. 📈 Monitoring Dashboard Rutin
 
-Jadikan dashboard sebagai alat monitoring wajib dalam rapat evaluasi bulanan. Pantau tren dropout per semester, per program studi, dan per kelompok demografis untuk pengambilan kebijakan berbasis data.
+Jadikan dashboard Metabase sebagai alat monitoring wajib dalam rapat evaluasi bulanan. Pantau tren dropout per semester, per program studi, dan per kelompok demografis.
 
 ### 6. 🤝 Program Orientasi Khusus Mahasiswa Rentan
 
-Mahasiswa berisiko tinggi perlu program orientasi dan konseling khusus:
-
-- Mahasiswa berusia > 25 tahun saat enrollment
-- Mahasiswa pindahan (displaced) dari luar daerah
-- Mahasiswa tanpa beasiswa dengan kondisi finansial terbatas
+Mahasiswa berusia > 25 tahun saat enrollment, mahasiswa pindahan (displaced), dan mahasiswa tanpa beasiswa dengan kondisi finansial terbatas perlu program orientasi dan konseling khusus.
 
 ---
 
@@ -189,9 +214,10 @@ Mahasiswa berisiko tinggi perlu program orientasi dan konseling khusus:
 ```
 submission/
 ├── model/
-│   ├── dropout_model.joblib    # Model Random Forest terlatih
-│   └── features.json           # Daftar fitur yang digunakan
-├── pratama_dicoding-dashboard/ # Screenshot visualisasi dashboard
+│   ├── dropout_model.joblib         # Model Random Forest terlatih
+│   ├── features.json                # Daftar fitur yang digunakan
+│   └── enrolled_for_prediction.csv  # Data Enrolled untuk prediksi masa depan
+├── pratama_dicoding-dashboard/      # Screenshot visualisasi dashboard
 │   ├── target_distribution.png
 │   ├── demographic_analysis.png
 │   ├── academic_performance.png
@@ -200,11 +226,14 @@ submission/
 │   ├── dropout_by_course.png
 │   ├── model_comparison.png
 │   └── model_evaluation.png
-├── notebook.ipynb              # Jupyter Notebook analisis lengkap
-├── app.py                      # Streamlit prototype
-├── data.csv                    # Dataset Students' Performance
-├── requirements.txt            # Daftar library
-└── README.md                   # Dokumentasi proyek (file ini)
+├── notebook.ipynb                   # Jupyter Notebook analisis lengkap
+├── app.py                           # Streamlit prototype
+├── data.csv                         # Dataset Students' Performance
+├── metabase.db.mv.db                # Database Metabase (dashboard)
+├── requirements.txt                 # Daftar library
+├── Pipfile                          # Pipenv dependencies
+├── packages.txt                     # System packages (Streamlit Cloud)
+└── README.md                        # Dokumentasi proyek (file ini)
 ```
 
 ---
